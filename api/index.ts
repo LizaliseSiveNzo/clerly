@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { ZodError } from "zod";
-import { service, HttpError } from "../server/service.ts";
+import { service, HttpError } from "../server/service.js";
 export const config = { api: { bodyParser: false } };
 export default async function handler(
   req: IncomingMessage,

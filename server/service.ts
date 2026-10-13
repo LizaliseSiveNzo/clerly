@@ -1,11 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import { customerSchema } from "../src/lib/customer.ts";
-import { productSchema } from "../src/lib/models.ts";
-import { STORE_ID, siteOrigin, checkoutOpen } from "./settings.ts";
-import { verifyYocoSignature } from "./yoco-signature.ts";
-import { preorderQuote } from "./preorder-quote.ts";
-import { PREORDER_TERMS_VERSION } from "../src/lib/preorder-terms.ts";
+import { customerSchema } from "../src/lib/customer.js";
+import { productSchema } from "../src/lib/models.js";
+import { STORE_ID, siteOrigin, checkoutOpen } from "./settings.js";
+import { verifyYocoSignature } from "./yoco-signature.js";
+import { preorderQuote } from "./preorder-quote.js";
+import { PREORDER_TERMS_VERSION } from "../src/lib/preorder-terms.js";
 export class HttpError extends Error {
   constructor(
     public status: number,
