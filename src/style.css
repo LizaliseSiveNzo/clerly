@@ -1196,3 +1196,49 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
 .has-product-images .gallery-thumbs img {height:auto;aspect-ratio:1;object-fit:contain;}
 .has-product-images .gallery-thumbs button:focus-visible {outline:3px solid var(--olive);outline-offset:3px;}
 
+/* Reference-inspired offer panel for the two cleansing bars. */
+.purchase-review-status {display:flex;align-items:center;gap:9px;margin:0 0 12px;font-size:12px;color:#62665d;line-height:1.4;}
+.purchase-review-status>span:first-child {color:#c19d43;font-size:23px;letter-spacing:1px;white-space:nowrap;}
+.reference-purchase h1 {color:#294e16;font-size:clamp(30px,2.9vw,44px);line-height:1.15;letter-spacing:-.035em;margin-bottom:15px;}
+.reference-price-row {display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.reference-price-row>strong {font-size:28px;font-weight:800;color:#294e16;white-space:nowrap;}
+.reference-price-row>del {font-size:22px;font-weight:700;color:#888b83;white-space:nowrap;}
+.purchase-origin-badge {border:1px solid #172012;border-radius:13px;padding:8px 11px;font-size:10px;font-weight:800;letter-spacing:.025em;}
+.purchase-feature-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:16px;}
+.purchase-feature-grid>div {display:flex;align-items:center;gap:12px;border-radius:9px;background:#eff7e6;color:#315313;padding:15px 13px;min-height:58px;}
+.purchase-feature-grid strong {font-size:14px;line-height:1.3;font-weight:800;}
+.purchase-feature-grid>div>span {font-size:23px;line-height:1;flex-shrink:0;}
+.reference-purchase .product-lead {font-size:16px;line-height:1.55;margin-bottom:30px;color:#53574e;}
+.reference-purchase .product-lead strong {font-weight:800;}
+.reference-purchase .bundle-selector legend {display:flex;align-items:center;gap:12px;width:100%;text-align:center;justify-content:center;font-size:20px;letter-spacing:.015em;color:#315313;margin-bottom:24px;}
+.reference-purchase .bundle-selector legend::before,.reference-purchase .bundle-selector legend::after {content:"";flex:1;height:2px;background:#c1ceaf;}
+.reference-purchase .bundle-option {position:relative;grid-template-columns:64px minmax(0,1fr) auto;border:1px solid #b6c7a3;border-radius:10px;padding:20px 14px;gap:12px;min-height:112px;background:#fff;margin-bottom:20px;}
+.reference-purchase .bundle-option.selected {border:2px solid #315313;padding:19px 13px;box-shadow:none;}
+.reference-purchase .bundle-option:focus-within {outline:3px solid #75965d;outline-offset:3px;}
+.reference-purchase .bundle-option input {position:absolute;opacity:0;width:1px;height:1px;}
+.reference-purchase .bundle-image-placeholder {grid-column:1;grid-row:1;width:64px;border:0;background:transparent;}
+.reference-purchase .bundle-image-placeholder img {height:74px;object-fit:contain;}
+.reference-purchase .bundle-description {grid-column:2;display:flex;align-items:flex-start;flex-direction:column;gap:6px;}
+.reference-purchase .bundle-description>strong {font-size:21px;color:#315313;}
+.reference-purchase .bundle-description>.offer-unit-price {background:#eff7e6;border-radius:9px;padding:3px 7px;color:#315313;font-size:12px;font-weight:800;margin:0;}
+.reference-purchase .bundle-description>.bundle-saving {background:none;padding:0;margin:0;color:#555a50;font-size:12px;}
+.reference-purchase .bundle-total {grid-column:3;display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right;margin:0;}
+.reference-purchase .bundle-total>strong {color:#315313;font-size:24px;}
+.reference-purchase .bundle-reference {font-size:13px;color:#777e70;margin:0;white-space:nowrap;}
+.reference-purchase .offer-badge {position:absolute;right:12px;top:-13px;background:#315313;color:#ffd55b;border-radius:0;max-width:none;padding:6px 13px;font-size:11px;font-weight:800;letter-spacing:.025em;}
+@media(max-width:700px) {
+ .purchase-review-status {font-size:11px;gap:7px;}
+ .reference-purchase h1 {font-size:32px;}
+ .purchase-feature-grid>div {padding:12px 9px;gap:8px;}
+ .purchase-feature-grid strong {font-size:12px;}
+ .purchase-feature-grid>div>span {font-size:20px;}
+ .reference-purchase .bundle-selector legend {font-size:18px;gap:8px;}
+ .reference-purchase .bundle-option {grid-template-columns:48px minmax(0,1fr) auto;gap:9px;padding:19px 10px;}
+ .reference-purchase .bundle-option.selected {padding:18px 9px;}
+ .reference-purchase .bundle-image-placeholder {width:48px;}
+ .reference-purchase .bundle-image-placeholder img {height:66px;}
+ .reference-purchase .bundle-description>strong {font-size:18px;}
+ .reference-purchase .bundle-total>strong {font-size:20px;}
+ .reference-purchase .bundle-description>.offer-unit-price,.reference-purchase .bundle-description>.bundle-saving {font-size:10px;}
+ .reference-purchase .bundle-reference {font-size:11px;}
+}
