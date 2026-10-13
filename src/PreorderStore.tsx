@@ -1,0 +1,145 @@
+import { createContext, useContext, useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { Link, useParams } from "react-router-dom";
+import catalog from "./preorder-catalog.json";
+import { money, store, storageKey } from "./config";
+import { useCart } from "./Cart";
+import { api, auth } from "./lib/client";
+import { PREORDER_TERMS_VERSION } from "./lib/preorder-terms";
+import type { Product } from "./lib/models";
+import { customerSchema, EMPTY_CUSTOMER, PROVINCES, readSession, saveSession, CHECKOUT_DRAFT } from "./lib/checkout";
+const draftProducts = catalog.products;
+type Item = typeof draftProducts[number] & {live?:boolean};
+const SalesContext = createContext<Item[]>(draftProducts);
+const useSalesProducts = () => useContext(SalesContext);
+export function SalesCatalogProvider({children,data}:{children:ReactNode;data:{products:Product[];checkoutEnabled:boolean}}) {
+  const products:Item[] = data.products.length || data.checkoutEnabled ? draftProducts.flatMap(draft=>{
+    const live=data.products.find(p=>p.id===draft.id);
+    if(!live)return [];
+    const variants=draft.variants.flatMap(offer=>{
+      const variant=live.variants.find(v=>v.id===offer.id);
+      return variant?[{...offer,...variant}]:[];
+    });
+    return variants.length?[{...draft,...live,variants,live:true}]:[];
+  }):draftProducts;
+  return <SalesContext.Provider value={products}>{children}</SalesContext.Provider>;
+}
+type Quote = { items: {variantId:string; qty:number; title:string; label:string; unitPrice:number; amount:number; image:string}[]; subtotal:number; shipping:number; total:number; dispatch:string; transit:string; freeShippingThresholdCents:number|null };
+const Arrow = () => <span aria-hidden="true">↗</span>;
+export function PhotoSlot({ title, wide = false }: { title: string; wide?: boolean }) {
+  return <div className={`photo-slot ${wide ? "wide" : ""}`} role="img" aria-label={`${title} — image placeholder`}><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1"><rect x="5" y="7" width="38" height="34" rx="2"/><circle cx="16" cy="17" r="4"/><path d="m5 35 12-12 9 9 8-11 9 14"/></svg><span>{title}</span><small>IMAGE PLACEHOLDER</small></div>;
+}
+function TrustStrip() {
+  return <div className="commerce-trust"><span>◎ One-time purchase</span><span>↗ Delivery tracking</span><span>↺ 30-day unopened returns</span><span>◇ Cancel before dispatch</span></div>;
+}
+function PreorderNotice() {
+  return <div className="preorder-note"><strong>Preorder dispatch: {catalog.dispatch}</strong><p>Estimated delivery: {catalog.transit}. {money(catalog.shippingCents)} delivery; free from {money(catalog.freeShippingThresholdCents)}.</p><Link to="/policies/delivery">Delivery details →</Link></div>;
+}
+function addLine(cart: ReturnType<typeof useCart>, product: Item, variant: Item["variants"][number], qty: number) {
+  cart.add({storeId:store.id,productId:product.id,variantId:variant.id,title:product.title,label:variant.label,image:product.images[0].url,unitPrice:variant.price_cents,qty});
+}
+function ProductCards() {
+  const products = useSalesProducts();
+  const cart = useCart();
+  const [added, setAdded] = useState("");
+  return <div className="sales-product-grid">{products.map(product => <article className="sales-card" key={product.id}>
+    <Link to={`/products/${product.slug}`} className="sales-card-image"><img src={product.images[0].url} alt={product.images[0].alt} loading="lazy"/><span className="coming-badge">Preorder</span></Link>
+    <p className="eyebrow">{product.unitKind === "bar" ? "THE CLEANSING BAR" : "THE LIQUID CLEANSE"}</p>
+    <Link to={`/products/${product.slug}`}><h3>{product.title}</h3></Link><p>{product.description}</p>
+    <div className="card-price"><strong>{money(product.variants[0].price_cents)}</strong><span>Bundle options available</span></div>
+    <button className="button" disabled={!!product.live && product.variants[0].stock<1} onClick={()=>{addLine(cart,product,product.variants[0],1);setAdded(product.id);}}>Add preorder to bag <Arrow /></button>
+    <p className="card-status" role="status">{added === product.id ? <Link to="/cart">Added. View your bag →</Link> : <Link to={`/products/${product.slug}`}>Choose a bundle →</Link>}</p>
+  </article>)}</div>;
+}
+function Confidence() {
+  return <section className="section confidence-section"><p className="eyebrow">CONFIDENCE STARTS WITH CLARITY</p><h2>Know your cleanse.<br/><em>Make it your ritual.</em></h2><div className="details-grid">
+    <div><h3>Clear ingredients.</h3><p>The full supplier-confirmed ingredient list and product care information will be provided before dispatch.</p></div>
+    <div><h3>Your format.</h3><p>Choose turmeric, solid black soap or liquid black soap. Explore a multipack if you want to stock up on your favourite format.</p></div>
+    <div><h3>Clear preorder terms.</h3><p>See the price and estimated dispatch window before checkout. Cancel your preorder before it leaves us.</p></div>
+  </div><TrustStrip /></section>;
+}
+function Feedback() {
+  return <section className="section feedback-section"><div className="section-heading"><div><p className="eyebrow">THE FIRST Clérly STORIES</p><h2>Your ritual.<br/><em>Your experience.</em></h2></div><span className="review-empty">Customer reviews will appear after launch.</span></div>
+    <div className="story-grid"><PhotoSlot title="Customer routine photograph"/><PhotoSlot title="Product demonstration video"/><PhotoSlot title="Customer product photograph"/></div>
+    <p className="concept-note">These spaces are reserved for genuine customer photographs and feedback. No customer results are represented by these placeholders.</p>
+  </section>;
+}
+const questions = [
+  ["How does a preorder work?",`You reserve your chosen product or bundle before dispatch. Our estimated dispatch window is ${catalog.dispatch}; delivery usually takes ${catalog.transit}. You can cancel before dispatch.`],
+  ["Do I need all three products?","No. Start with the format you prefer. Bundles offer a way to try the collection or stock up; they are not a compulsory treatment routine."],
+  ["What is the delivery cost?",`${money(catalog.shippingCents)} across South Africa, with free delivery on orders from ${money(catalog.freeShippingThresholdCents)}. The total is shown at checkout.`],
+  ["Can I cancel or return my order?","Cancel before dispatch for a full refund. We offer 30-day change-of-mind returns for unopened, unused products in their original packaging. Your statutory rights for faulty or incorrect goods remain unaffected. See our returns policy."],
+  ["Can I use the products on my face?","Intended use varies by formulation. Supplier-confirmed directions and the full ingredient list will be provided before dispatch; follow the product label."],
+  ["Will the turmeric stain?","Staining and handling depend on the final formulation. We will provide product-specific care information, and do not promise a stain-free result before that is verified."],
+  ["Will this treat acne or fade dark marks?","Clérly products are presented as cleansers. Treatment results and timelines are not guaranteed; product-specific benefits require supporting evidence."],
+  ["Is this a subscription?","No. All displayed offers are one-time purchases. You choose when to order again."],
+];
+export function SalesFAQ() {
+  return <div className="sales-faq">{questions.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div>;
+}
+export function SalesHome() {
+  return <>
+    <section className="hero commerce-hero"><div className="hero-copy"><p className="eyebrow"><span className="dot"/> THE FIRST Clérly COLLECTION</p><h1>Your next<br/>cleansing ritual<br/><em>starts here.</em></h1><p className="hero-description">Turmeric cleansing bars. African black soap, in solid and liquid form. Familiar ingredients, a considered ritual, and a choice that’s yours.</p><Link className="button" to="/products/turmeric-cleansing-bar">Shop the turmeric bar <Arrow/></Link><Link className="text-link" to="/shop">Explore all three products <Arrow/></Link><p className="hero-note">Preorder · Estimated dispatch in {catalog.dispatch}</p></div><div className="hero-art"><img src="/blkd-turmeric-bar.svg" alt="Clérly turmeric bar — packaging concept"/><div className="art-caption"><span>PRODUCT PHOTOGRAPHY PLACEHOLDER</span><span>01 / Clérly</span></div><div className="round-seal" aria-hidden="true">ROOTED<br/><span>✳</span><br/>IN RITUAL</div></div></section>
+    <TrustStrip />
+    <section className="section"><div className="section-heading"><div><p className="eyebrow">FIND YOUR FIRST CLEANSE</p><h2>Three products.<br/><em>Your kind of ritual.</em></h2></div><Link className="text-link" to="/shop">Shop the collection <Arrow/></Link></div><ProductCards/></section>
+    <section className="section split-story"><PhotoSlot title="Clérly routine and texture photograph"/><div><p className="eyebrow">FAMILIAR INGREDIENTS, CONSIDERED CHOICES</p><h2>More than a bar.<br/><em>A place in your day.</em></h2><p>There is something familiar about reaching for a cleansing bar. Clérly brings turmeric and African black soap into one collection, with a liquid option for those who prefer a bottle.</p><p>Choose your format, read the product details, and build a ritual at your own pace.</p><Link className="text-link" to="/about">Our story <Arrow/></Link></div></section>
+    <Confidence/><section className="section"><p className="eyebrow">MAKE YOUR BAG GO FURTHER</p><h2>A little more ritual.<br/><em>A little less per item.</em></h2><p className="section-intro">Explore three- and five-bar turmeric bundles, plus two- and three-item black soap offers. Savings are calculated against the displayed single-item price.</p><BundleCards/></section>
+    <Feedback/><section className="section sales-faq-section"><p className="eyebrow">YOUR QUESTIONS, ANSWERED</p><h2>A clear choice<br/><em>starts here.</em></h2><SalesFAQ/></section>
+    <section className="closing"><p className="eyebrow">ROOTED IN RITUAL</p><h2>Find your cleanse.<br/><em>Make it yours.</em></h2><Link className="button light" to="/shop">Shop the collection <Arrow/></Link></section>
+  </>;
+}
+function BundleCards() {
+  const products = useSalesProducts().filter(p=>p.variants.length>1);
+  return <div className="bundle-feature-grid">{products.map(product=>{const offer=product.variants[1];const saving=product.variants[0].price_cents*offer.units-offer.price_cents;return <Link className="bundle-feature" to={`/products/${product.slug}?bundle=${offer.id}`} key={offer.id}><p className="eyebrow">BUNDLE & SAVE</p><h3>{product.title}</h3><p>{offer.label}</p><strong>{money(offer.price_cents)}</strong><span>Save {money(saving)} compared with singles</span><span className="text-link">Choose this bundle <Arrow/></span></Link>})}</div>;
+}
+export function SalesShop() {
+  return <div className="page"><p className="eyebrow">ROOTED IN RITUAL</p><h1>The cleansing collection.</h1><p className="intro">Start with turmeric, or choose African black soap in the format you prefer.</p><PreorderNotice/><ProductCards/><section className="catalog-bundles"><h2>Bundle your ritual.</h2><BundleCards/></section><TrustStrip/></div>;
+}
+function ProductInformation({product}:{product:Item}) {
+  return <>
+    <section className="section product-story"><div><p className="eyebrow">MEET YOUR CLEANSE</p><h2>{product.unitKind === "bottle" ? "The ritual, in liquid form." : product.slug.startsWith("turmeric") ? "Turmeric. In a bar. In your ritual." : "A familiar tradition. A solid beginning."}</h2><p>{product.description}</p><p>Choose this format for the ritual you want to build. The collection offers alternatives, so you can start with one product and order again when you’re ready.</p></div><PhotoSlot title={`${product.title} in-use photograph`}/></section>
+    <section className="section demo-section"><p className="eyebrow">SEE THE RITUAL</p><h2>The texture.<br/><em>The moment.</em></h2><div className="story-grid"><PhotoSlot title="Lather and texture close-up"/><PhotoSlot title="How-to-use video"/><PhotoSlot title="Product in your routine"/></div></section>
+    <section className="section process-section"><p className="eyebrow">FROM PREORDER TO YOUR DOOR</p><h2>A clear path.<br/><em>Every step of the way.</em></h2><ol className="order-timeline"><li><span>01</span><h3>Choose your ritual.</h3><p>Select a single item or bundle, then review your bag and delivery details.</p></li><li><span>02</span><h3>Reserve your preorder.</h3><p>Review the full total and preorder terms before proceeding to payment.</p></li><li><span>03</span><h3>Your batch is prepared.</h3><p>Estimated dispatch in {catalog.dispatch}. We’ll communicate any changes before dispatch.</p></li><li><span>04</span><h3>Follow your delivery.</h3><p>Tracking is provided after dispatch. Estimated transit: {catalog.transit}.</p></li></ol></section>
+    <section className="section evidence-section"><div><p className="eyebrow">PRODUCT DETAILS, CLEARLY SHARED</p><h2>Trust comes<br/><em>from the details.</em></h2><p>Good choices start with knowing what you’re using. Explore ingredients, directions and product care below. Supplier-confirmed formulation details will be shared before dispatch.</p><details><summary>Ingredients and fragrance</summary><p>{product.ingredients}</p></details><details><summary>How to use and store</summary><p>{product.usage}</p></details><details><summary>Product size</summary><p>Offers are sold by item count. Final bar weight or bottle volume will be confirmed before dispatch; the packaging shown is a concept.</p></details></div><PhotoSlot title="Ingredient and product detail photograph"/></section>
+    <section className="section results-layout"><p className="eyebrow">REAL FEEDBACK BELONGS HERE</p><h2>Stories from<br/><em>the first rituals.</em></h2><div className="result-pair"><PhotoSlot title="Customer image before use"/><PhotoSlot title="Customer image after use"/></div><p className="concept-note">Photo placeholders only. No before-and-after results are represented. Verified customer stories will be added after launch, with permission.</p></section>
+    <Feedback/><section className="section sales-faq-section"><p className="eyebrow">GOOD TO KNOW</p><h2>Before your first order.</h2><SalesFAQ/></section><section className="section"><h2>Explore the rest of the ritual.</h2><ProductCards/></section>
+  </>;
+}
+export function SalesProduct() {
+  const products = useSalesProducts();
+  const {slug}=useParams(); const product=products.find(p=>p.slug===slug); const cart=useCart();
+  const initial=typeof window!=="undefined"?new URLSearchParams(window.location.search).get("bundle"):null;
+  const [selected,setSelected]=useState(initial||"");const [qty,setQty]=useState(1);const [added,setAdded]=useState(false);const [photo,setPhoto]=useState(0);
+  useEffect(()=>{setSelected(initial||"");setQty(1);setAdded(false);setPhoto(0)},[slug,initial]);
+  if(!product)return <div className="page"><h1>Product not found.</h1><Link to="/shop">Explore the collection →</Link></div>;
+  const variant=product.variants.find(v=>v.id===selected)||product.variants[0];
+  const single=product.variants[0].price_cents;
+  const add=()=>{addLine(cart,product,variant,qty);setAdded(true)};
+  return <>
+    <div className="page sales-product-top"><div className="sales-gallery"><div className="sales-main-image">{photo===0?<img src={product.images[0].url} alt={product.images[0].alt}/>:<PhotoSlot title={photo===1?"Product in use":"Lather and texture"}/>}<span className="gallery-caption">Product photography placeholder</span></div><div className="gallery-thumbs">{["Packaging","In use","Texture"].map((label,i)=><button key={label} aria-pressed={photo===i} onClick={()=>setPhoto(i)}>{i===0?<img src={product.images[0].url} alt=""/>:<span aria-hidden="true">◇</span>}<span>{label}</span></button>)}</div></div>
+    <div className="sales-buy-panel"><Link className="breadcrumb" to="/shop">Collection / {product.title}</Link><p className="eyebrow">Clérly · FIRST COLLECTION PREORDER</p><h1>{product.title}</h1><p className="product-lead">{product.description}</p><div className="price-display"><strong>{money(variant.price_cents)}</strong>{variant.units>1&&<span>{money(Math.round(variant.price_cents/variant.units))} per {product.unitKind}</span>}</div><div className="benefit-tags"><span>Choose your format</span><span>Bundle savings</span><span>One-time purchase</span><span>Preorder batch</span></div>
+    <fieldset className="bundle-selector"><legend>Choose your offer</legend>{product.variants.map((offer,i)=>{const save=single*offer.units-offer.price_cents;return <label className={offer.id===variant.id?"bundle-option selected":"bundle-option"} key={offer.id}><input type="radio" name="bundle" value={offer.id} checked={offer.id===variant.id} onChange={()=>{setSelected(offer.id);setAdded(false)}}/><div className="bundle-image-placeholder"><img src={offer.bundleImage || product.images[0].url} alt="" loading="lazy"/><span aria-hidden="true">×{offer.units}</span><small aria-hidden="true">IMAGE PLACEHOLDER</small></div><div className="bundle-description"><strong>{offer.label}</strong><small>{offer.units} {product.unitKind}{offer.units>1?"s":""} · {money(Math.round(offer.price_cents/offer.units))} each</small>{save>0&&<small className="bundle-saving">Save {money(save)} ({Math.round(save/(single*offer.units)*100)}%) vs singles</small>}</div><div className="bundle-total">{i===2&&<span className="offer-badge">Lowest price per item</span>}<strong>{money(offer.price_cents)}</strong>{save>0&&<span className="bundle-reference">Singles: {money(single*offer.units)}</span>}</div></label>})}</fieldset>
+    <div className="purchase-row"><div className="qty-stepper"><button aria-label="Decrease quantity" disabled={qty===1} onClick={()=>setQty(q=>q-1)}>−</button><output aria-label="Quantity">{qty}</output><button aria-label="Increase quantity" disabled={qty===20} onClick={()=>setQty(q=>q+1)}>+</button></div><button className="button" disabled={!!product.live && variant.stock<qty} onClick={add}>Add preorder · {money(variant.price_cents*qty)} <Arrow/></button></div>
+    <p className="added-message" role="status">{added?<Link to="/cart">Added to your bag. Continue to checkout →</Link>:"One-time purchase. No subscription."}</p><PreorderNotice/><div className="purchase-assurance"><Link to="/policies/returns">↺ 30-day unopened returns</Link><span>◇ Cancel before dispatch</span></div>
+    <details><summary>What’s included?</summary><p>{variant.size} of {product.title}. Packaging shown is a concept; the final ingredient list and product size will be confirmed before dispatch.</p></details><details><summary>Preorder and delivery</summary><p>{product.delivery} Delivery is {money(catalog.shippingCents)}, or free when your bag reaches {money(catalog.freeShippingThresholdCents)}.</p></details><details><summary>Cancellation and returns</summary><p>Cancel before dispatch for a full refund. Unopened, unused products may be returned within 30 days of delivery. Statutory rights remain unaffected.</p><Link to="/policies/returns" className="text-link">Read the full policy →</Link></details>
+    </div></div><ProductInformation product={product}/><div className="sticky-purchase"><div><strong>{product.title}</strong><span>{variant.label} · {money(variant.price_cents*qty)}</span></div><button className="button" disabled={!!product.live && variant.stock<qty} onClick={add}>Add preorder <Arrow/></button></div>
+  </>;
+}
+function useQuote() {
+  const cart=useCart();const [quote,setQuote]=useState<Quote|null>(null);const [error,setError]=useState("");
+  const fingerprint=JSON.stringify(cart.items.map(i=>({variantId:i.variantId,qty:i.qty})));
+  useEffect(()=>{let alive=true;setQuote(null);setError("");const lines=JSON.parse(fingerprint);if(lines.length)void api<Quote>("preorder-quote",{lines}).then(q=>{if(alive)setQuote(q)}).catch(e=>{if(alive)setError(e.message)});return()=>{alive=false}},[fingerprint]);
+  return {quote,error};
+}
+function Totals({quote}:{quote:Quote|null}) {return <div className="order-totals"><div><span>Subtotal</span><strong>{quote?money(quote.subtotal):"Calculating…"}</strong></div><div><span>Delivery</span><strong>{quote?quote.shipping===0?"Free":money(quote.shipping):"Calculating…"}</strong></div><div className="grand-total"><span>Total</span><strong>{quote?money(quote.total):"Calculating…"}</strong></div></div>}
+export function SalesCart() {
+  const cart=useCart();const {quote,error}=useQuote();
+  return <div className="page"><p className="eyebrow">YOUR RITUAL, RESERVED</p><h1>Your bag.</h1>{!cart.items.length?<div className="empty"><h2>Find your first cleanse.</h2><p>Your bag is empty. Explore the collection and choose a single item or bundle.</p><Link className="button" to="/shop">Shop the collection <Arrow/></Link></div>:<div className="sales-cart-grid"><div>{cart.items.map(line=><div className="cart-line" key={line.variantId}><img src={line.image} alt={line.title}/><div><h2>{quote?.items.find(item=>item.variantId===line.variantId)?.title || line.title}</h2><p>{line.label} · Preorder</p><div className="qty-stepper"><button aria-label={`Decrease ${line.label}`} onClick={()=>cart.quantity(line.variantId,line.qty-1)}>−</button><output>{line.qty}</output><button aria-label={`Increase ${line.label}`} disabled={line.qty>=20} onClick={()=>cart.quantity(line.variantId,line.qty+1)}>+</button></div><button className="text-link" onClick={()=>cart.quantity(line.variantId,0)}>Remove</button></div><strong>{money((quote?.items.find(i=>i.variantId===line.variantId)?.unitPrice||line.unitPrice)*line.qty)}</strong></div>)}<Link className="text-link" to="/shop">Continue shopping →</Link></div><aside className="checkout-summary"><h2>Order summary.</h2><p className="free-shipping-progress">{quote?quote.freeShippingThresholdCents===null?"Delivery is included in the total below.":quote.subtotal>=quote.freeShippingThresholdCents?"Your bag qualifies for free delivery.":`Add ${money(quote.freeShippingThresholdCents-quote.subtotal)} for free delivery.`:"Checking your bag…"}</p><Totals quote={quote}/><p role="alert">{error}</p><Link className="button" to="/checkout">Continue to checkout <Arrow/></Link><PreorderNotice/><p>Cancel before dispatch. One-time purchase.</p></aside></div>}</div>;
+}
+export function SalesCheckout() {
+  const cart=useCart();const {quote,error:quoteError}=useQuote();const [details,setDetails]=useState(()=>({...EMPTY_CUSTOMER,...readSession<typeof EMPTY_CUSTOMER>(CHECKOUT_DRAFT)}));const [accepted,setAccepted]=useState(false);const [error,setError]=useState("");const [busy,setBusy]=useState(false);const [ready,setReady]=useState(false);
+  useEffect(()=>saveSession(CHECKOUT_DRAFT,details),[details]);
+  useEffect(()=>{let alive=true;void api<{checkoutEnabled:boolean}>("catalog").then(v=>{if(alive)setReady(v.checkoutEnabled)}).catch(()=>{});return()=>{alive=false}},[]);
+  async function submit(e:FormEvent){e.preventDefault();setError("");const parsed=customerSchema.safeParse(details);if(!parsed.success){setError(parsed.error.issues[0].message);document.getElementById(String(parsed.error.issues[0].path[0]))?.focus();return}if(!accepted){setError("Please acknowledge the preorder dispatch window and terms.");return}if(!ready){setError("Yoco payment activation is pending. Your details and bag are saved. No order has been placed and no payment has been taken.");return}const session=auth?(await auth.auth.getSession()).data.session:null;if(!session){setError("Sign in to your account before continuing to Yoco.");return}setBusy(true);try{const fingerprint=JSON.stringify({termsVersion:PREORDER_TERMS_VERSION,customer:parsed.data,lines:cart.items.map(i=>({variantId:i.variantId,qty:i.qty}))});const saved=readSession<{key:string;fingerprint:string}>(storageKey("payment-request"));const requestKey=saved?.fingerprint===fingerprint?saved.key:crypto.randomUUID();saveSession(storageKey("payment-request"),{key:requestKey,fingerprint});const result=await api<{redirectUrl:string}>("checkout",{requestKey,termsAccepted:true,termsVersion:PREORDER_TERMS_VERSION,lines:cart.items.map(i=>({variantId:i.variantId,qty:i.qty})),customer:parsed.data});window.location.assign(result.redirectUrl)}catch(e){setError(e instanceof Error?e.message:"Payment unavailable.");setBusy(false)}}
+  if(!cart.items.length)return <div className="page"><h1>Checkout.</h1><p>Your bag is empty.</p><Link className="button" to="/shop">Choose your cleanse <Arrow/></Link></div>;
+  return <div className="page"><p className="eyebrow">Clérly · PREORDER CHECKOUT</p><h1>Your ritual starts here.</h1><div className="sales-cart-grid"><form onSubmit={submit} noValidate><h2>Contact & delivery.</h2><div className="checkout-fields">{Object.entries({fullName:"Full name",email:"Email address",phone:"Phone number",streetAddress:"Street address",suburb:"Suburb (optional)",city:"City or town",province:"Province",postalCode:"Postal code",notes:"Delivery notes (optional)"}).map(([key,label])=><label htmlFor={key} key={key}>{label}{key==="province"?<select id={key} value={details.province} onChange={e=>setDetails(d=>({...d,province:e.target.value}))}><option value="">Select a province</option>{PROVINCES.map(p=><option key={p}>{p}</option>)}</select>:<input id={key} type={key==="email"?"email":key==="phone"?"tel":"text"} autoComplete={({fullName:"name",email:"email",phone:"tel",streetAddress:"street-address",city:"address-level2",postalCode:"postal-code"} as Record<string,string>)[key]} value={details[key as keyof typeof details]} onChange={e=>setDetails(d=>({...d,[key]:e.target.value}))}/>}</label>)}</div><h2>Payment.</h2><div className="yoco-method"><strong>Yoco</strong><span>Pay through Yoco’s hosted checkout. Card details are entered on Yoco.</span></div>{!ready&&<p className="payment-pending">Payment activation is pending. You can review your bag and delivery details here; no payment or order is accepted yet.</p>}<label className="terms-check"><input type="checkbox" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/><span>I understand this is a preorder with estimated dispatch in {catalog.dispatch}, and agree to the <Link to="/policies/terms">terms</Link> and <Link to="/policies/returns">returns policy</Link>.</span></label><p role="alert" className="checkout-error">{error||quoteError}</p><button className="button" disabled={busy||!quote}>{busy?"Preparing Yoco…":"Continue to Yoco"}<Arrow/></button>{ready&&<Link className="text-link" to="/account">Sign in before payment →</Link>}<p className="concept-note">No card information is stored by Clérly. Payment confirmation is required before an order is confirmed.</p></form><aside className="checkout-summary"><h2>Your preorder.</h2>{quote?.items.map(i=><div className="checkout-line" key={i.variantId}><img src={i.image} alt={i.title}/><div><strong>{i.title}</strong><span>{i.label} × {i.qty}</span></div><span>{money(i.amount)}</span></div>)}<Totals quote={quote}/><PreorderNotice/><Link className="text-link" to="/cart">Edit your bag →</Link></aside></div></div>;
+}

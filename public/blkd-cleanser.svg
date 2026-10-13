@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+<defs>
+<linearGradient id="wall" x2="1" y2="1"><stop stop-color="#f2eddf"/><stop offset=".58" stop-color="#e1e2d3"/><stop offset="1" stop-color="#bbc3ad"/></linearGradient>
+<linearGradient id="stone" x2=".2" y2="1"><stop stop-color="#e8dcc5"/><stop offset="1" stop-color="#c4b69e"/></linearGradient>
+<linearGradient id="amber"><stop stop-color="#3d2a1d"/><stop offset=".12" stop-color="#91613a"/><stop offset=".3" stop-color="#654023"/><stop offset=".7" stop-color="#3a291b"/><stop offset=".88" stop-color="#714c2c"/><stop offset="1" stop-color="#2b241b"/></linearGradient>
+<linearGradient id="pump"><stop stop-color="#171916"/><stop offset=".45" stop-color="#3a3d32"/><stop offset="1" stop-color="#161914"/></linearGradient>
+<linearGradient id="label"><stop stop-color="#dfd8c7"/><stop offset=".2" stop-color="#f6f0e2"/><stop offset=".8" stop-color="#f1ebdc"/><stop offset="1" stop-color="#c9c3b3"/></linearGradient>
+<filter id="blur"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="800" height="1000" fill="url(#wall)"/>
+<path d="M-90 10 590 0 0 745-80 780Z" fill="#fffaf0" opacity=".3"/>
+<path d="M735-40 840-30 155 790 30 790Z" fill="#fffaf0" opacity=".2"/>
+<ellipse cx="486" cy="846" rx="226" ry="42" fill="#5d5b42" opacity=".2" filter="url(#blur)"/>
+<path d="M84 784Q260 720 632 745L705 844 694 1000H80Z" fill="url(#stone)"/>
+<path d="M84 784Q260 720 632 745L705 844Q402 821 80 858Z" fill="#ede3d0"/>
+<ellipse cx="422" cy="778" rx="111" ry="20" fill="#332a1c" opacity=".32" filter="url(#blur)"/>
+<g transform="rotate(-7 400 540)">
+<path d="M357 269V211Q357 201 369 201H461Q472 201 472 211V236H409V269Z" fill="url(#pump)"/>
+<rect x="359" y="269" width="77" height="37" rx="4" fill="#22251e"/>
+<path d="M362 278H432M362 287H432M362 296H432" stroke="#6e705e" stroke-opacity=".4"/>
+<path d="M349 307H447V332Q505 351 507 396V733Q507 766 474 771H322Q290 766 290 733V396Q292 351 349 332Z" fill="url(#amber)" stroke="#35291d" stroke-width="2"/>
+<path d="M316 389Q316 364 345 354" fill="none" stroke="#e5bc82" stroke-width="12" stroke-linecap="round" opacity=".18"/>
+<path d="M305 421V725" stroke="#f1c28c" stroke-width="5" opacity=".13"/>
+<path d="M484 414V730" stroke="#a48054" stroke-width="3" opacity=".23"/>
+<path d="M291 455Q396 444 506 455V674Q396 686 291 674Z" fill="url(#label)"/>
+<text x="318" y="517" font-family="Georgia,serif" font-weight="400" font-size="48" letter-spacing="0" fill="#292b24">Clérly</text>
+<path d="M317 539H479" stroke="#9a998a" stroke-width=".8"/>
+<text x="318" y="570" font-family="Arial,sans-serif" font-size="13" letter-spacing="2.2" fill="#383d30">AFRICAN</text>
+<text x="318" y="591" font-family="Arial,sans-serif" font-size="13" letter-spacing="2.2" fill="#383d30">BLACK SOAP</text>
+<text x="318" y="623" font-family="Arial,sans-serif" font-size="8" letter-spacing="1.5" fill="#646655">LIQUID CLEANSER</text>
+<text x="318" y="650" font-family="Arial,sans-serif" font-size="7" letter-spacing="1.3" fill="#646655">01 / ROOTED IN RITUAL</text>
+<path d="M307 746Q398 759 490 745" stroke="#af7544" stroke-width="3" fill="none" opacity=".3"/>
+</g>
+<g fill="#798363" opacity=".55"><path d="M800 690Q693 582 765 527Q814 581 800 690Z"/><path d="M800 761Q674 747 697 681Q773 683 800 761Z"/><path d="M800 633Q777 484 822 462Z"/></g>
+</svg>

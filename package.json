@@ -1,0 +1,30 @@
+{
+  "name": "still-form-skincare",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build && vite build --ssr scripts/prerender-entry.tsx --outDir dist-ssr && node scripts/metadata.mjs",
+    "test": "vitest run",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.106.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "7.18.4",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.9",
+    "@playwright/test": "1.60.0",
+    "@types/node": "22.16.5",
+    "@types/react": "18.3.23",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react-swc": "4.3.3",
+    "typescript": "5.8.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.4"
+  }
+}
