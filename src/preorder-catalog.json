@@ -18,8 +18,28 @@
       "delivery": "Preorder: estimated dispatch in 15–20 business days. Allow 2–5 business days for delivery after dispatch.",
       "images": [
         {
-          "url": "/blkd-turmeric-bar.svg",
-          "alt": "Clérly Turmeric Cleansing Bar — packaging concept; photography placeholder"
+          "url": "/turmeric/packaging.webp",
+          "alt": "Clérly turmeric bar and packaging on a green background"
+        },
+        {
+          "url": "/turmeric/product-details.webp",
+          "alt": "Clérly turmeric bar product detail graphic"
+        },
+        {
+          "url": "/turmeric/how-to-use.webp",
+          "alt": "Clérly turmeric bar usage graphic"
+        },
+        {
+          "url": "/turmeric/routine-timeline.webp",
+          "alt": "Clérly turmeric bar routine timeline graphic"
+        },
+        {
+          "url": "/turmeric/skin-diagram.webp",
+          "alt": "Clérly turmeric bar skin diagram graphic"
+        },
+        {
+          "url": "/turmeric/brand-visual.webp",
+          "alt": "Clérly turmeric bar customer and brand graphic"
         }
       ],
       "published": true,

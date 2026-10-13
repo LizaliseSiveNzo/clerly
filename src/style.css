@@ -1191,3 +1191,8 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
  .purchase-row .button {font-size:14px;padding-inline:15px;}.sticky-purchase .button {font-size:13px;}
 }
 @media (max-width:700px) { .wordmark span { font-size: 23px; margin-top: 0; } }
+
+.has-product-images .sales-main-image>img {aspect-ratio:1;object-fit:contain;}
+.has-product-images .gallery-thumbs img {height:auto;aspect-ratio:1;object-fit:contain;}
+.has-product-images .gallery-thumbs button:focus-visible {outline:3px solid var(--olive);outline-offset:3px;}
+
