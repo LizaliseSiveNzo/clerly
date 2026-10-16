@@ -58,7 +58,7 @@ function Header() {
       </div>
       <header>
         <Link to="/" className="wordmark" aria-label={`${store.name} home`}>
-          {store.name}
+          <img src="/clerly-logo-moss.png" alt={store.name} width={2036} height={772} />
 
         </Link>
         <button
@@ -492,8 +492,7 @@ function Footer() {
       <div className="footer-top">
         <div>
           <Link to="/" className="wordmark">
-            {store.name}
-
+            <img src="/clerly-logo-moss.png" alt={store.name} width={2036} height={772} />
           </Link>
           <p>{store.tagline}</p>
         </div>

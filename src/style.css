@@ -1242,3 +1242,8 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
  .reference-purchase .bundle-description>.offer-unit-price,.reference-purchase .bundle-description>.bundle-saving {font-size:10px;}
  .reference-purchase .bundle-reference {font-size:11px;}
 }
+
+/* Shared transparent brand artwork, sized for header and footer. */
+.wordmark {display:inline-flex;align-items:center;line-height:1;flex-shrink:0;}
+.wordmark img {display:block;width:156px;height:auto;}
+@media (max-width:700px) {.wordmark img {width:118px;}}
