@@ -1260,3 +1260,4 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
 .serum-offer-note h3 {margin-top:24px;}
 @media(max-width:1000px) {.sales-product-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:700px) {.sales-product-grid {grid-template-columns:1fr;}.serum-hero .hero-art {min-height:520px;}.announcement {font-size:8px;letter-spacing:0;}}
+.serum-gallery .sales-main-image>img {object-fit:contain;background:#eee9df;}
