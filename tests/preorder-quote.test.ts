@@ -1,8 +1,18 @@
 import {expect,it} from "vitest";
 import {preorderQuote} from "../server/preorder-quote";
 import catalog from "../src/preorder-catalog.json";
-const single = catalog.products[0].variants[0].id;
-const bundle = catalog.products[0].variants[2].id;
+it("prices serum single, duo and trio with free shipping only on the eligible bundle",()=>{
+  const serum=catalog.products.find(p=>p.slug === "niacinamide-5-serum")!;
+  const quote=(i:number)=>preorderQuote({lines:[{variantId:serum.variants[i].id,qty:1}]});
+  expect(quote(0)).toMatchObject({subtotal:19900,shipping:7900,total:27800});
+  expect(quote(1)).toMatchObject({subtotal:34900,shipping:7900,total:42800});
+  expect(quote(2)).toMatchObject({subtotal:49900,shipping:0,total:49900});
+  const soap=catalog.products.find(p=>p.slug === "african-black-soap-bar")!;
+  expect(preorderQuote({lines:[{variantId:serum.variants[2].id,qty:1},{variantId:soap.variants[0].id,qty:1}]}).shipping).toBe(0);
+  expect(()=>preorderQuote({lines:[{variantId:serum.variants[0].id,qty:1,sku:"CLERLY-NIA5-TRIO"}]})).toThrow();
+});
+const single = catalog.products.find(p=>p.slug === "turmeric-cleansing-bar")!.variants[0].id;
+const bundle = catalog.products.find(p=>p.slug === "turmeric-cleansing-bar")!.variants[2].id;
 it("uses server prices and delivery, rather than cached cart values",()=>{
   expect(preorderQuote({lines:[{variantId:single,qty:1}]})).toMatchObject({subtotal:44853,shipping:7900,total:52753});
   expect(()=>preorderQuote({lines:[{variantId:single,qty:1,price:1}]})).toThrow();
@@ -24,7 +34,7 @@ it("rejects unknown variants and empty bags",()=>{
   expect(()=>preorderQuote({lines:[]})).toThrow();
 });
 it("uses the activated database catalogue when supplied",()=>{
-  const source={products:[{...catalog.products[0],variants:[{...catalog.products[0].variants[0],price_cents:32000}]}],shippingCents:6500,freeShippingThresholdCents:null};
+  const source={products:[{...catalog.products.find(p=>p.slug === "turmeric-cleansing-bar")!,variants:[{...catalog.products.find(p=>p.slug === "turmeric-cleansing-bar")!.variants[0],price_cents:32000}]}],shippingCents:6500,freeShippingThresholdCents:null};
   expect(preorderQuote({lines:[{variantId:single,qty:3}]},source)).toMatchObject({subtotal:96000,shipping:6500,total:102500});
   expect(()=>preorderQuote({lines:[{variantId:single,qty:3}]},{...source,enforceStock:true})).toThrow("allocation");
 });

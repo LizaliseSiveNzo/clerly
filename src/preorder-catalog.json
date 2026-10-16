@@ -1,12 +1,63 @@
 {
   "exchangeRate": 16.49,
-  "pricingSource": "Earthly Derm screenshot bundle prices converted at 16.49 ZAR/USD; one-time draft pricing. Liquid uses black bar pricing.",
+  "pricingSource": "Serum: R199 single 50ml, R349 duo, R499 trio with free standard delivery, as discussed. Soap prices retain the previous converted pricing.",
   "shippingCents": 7900,
   "freeShippingThresholdCents": 90000,
   "dispatch": "15–20 business days",
   "transit": "2–5 business days after dispatch",
   "returnsDays": 30,
   "products": [
+    {
+      "id": "e4a545f7-9c78-4406-a0a5-67435fbc1267",
+      "slug": "niacinamide-5-serum",
+      "title": "Clérly 5% Niacinamide Serum",
+      "description": "Your everyday ritual, thoughtfully focused. A 50ml niacinamide serum with single, duo and trio options to make it yours.",
+      "collection": "treat",
+      "ingredients": "Planned active: 5% niacinamide. Full INCI and final formula verification will be shared before dispatch.",
+      "usage": "Final application instructions, patch-test guidance and storage information will accompany the confirmed formula.",
+      "delivery": "Preorder: estimated dispatch in 15–20 business days. Allow 2–5 business days for delivery after dispatch. Free standard delivery with the three-bottle serum bundle.",
+      "images": [
+        {
+          "url": "/serum/clerly-niacinamide-concept.webp",
+          "alt": "Clérly serum in a frosted glass bottle with gold and white dropper — packaging concept"
+        }
+      ],
+      "published": true,
+      "demo": false,
+      "unitKind": "bottle",
+      "variants": [
+        {
+          "id": "bf000000-0000-4000-8000-000000000401",
+          "label": "Single · 50ml",
+          "sku": "CLERLY-NIA5-SINGLE",
+          "size": "1 × 50ml",
+          "price_cents": 19900,
+          "stock": 0,
+          "units": 1,
+          "bundleImage": ""
+        },
+        {
+          "id": "bf000000-0000-4000-8000-000000000402",
+          "label": "Duo · 2 × 50ml",
+          "sku": "CLERLY-NIA5-DUO",
+          "size": "2 × 50ml",
+          "price_cents": 34900,
+          "stock": 0,
+          "units": 2,
+          "bundleImage": ""
+        },
+        {
+          "id": "bf000000-0000-4000-8000-000000000403",
+          "label": "Trio · 3 × 50ml",
+          "sku": "CLERLY-NIA5-TRIO",
+          "size": "3 × 50ml",
+          "price_cents": 49900,
+          "stock": 0,
+          "units": 3,
+          "bundleImage": ""
+        }
+      ]
+    },
     {
       "id": "bf000000-0000-4000-8000-000000000001",
       "slug": "turmeric-cleansing-bar",
@@ -180,5 +231,8 @@
       ],
       "unitKind": "bottle"
     }
+  ],
+  "freeShippingSkus": [
+    "CLERLY-NIA5-TRIO"
   ]
 }

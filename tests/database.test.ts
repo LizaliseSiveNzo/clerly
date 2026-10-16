@@ -12,6 +12,7 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
    insert into public.orders values('00000000-0000-4000-8000-000000000001',900);
    insert into auth.users values('00000000-0000-4000-8000-000000000002'),('00000000-0000-4000-8000-000000000003');`);
     await db.exec(readFileSync("database/proposed-shared-schema.sql", "utf8"));
+    await db.exec(readFileSync("database/serum-trio-delivery.sql", "utf8"));
     expect(
       (
         await db.query<{ store_id: string; total_amount: number }>(
@@ -153,6 +154,13 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
     await db.exec("update commerce_stores set free_shipping_threshold_cents=25000 where id='still-form'");
     const freeDeliveryOrder = (await create("still-form", other, crypto.randomUUID(), lines)).rows[0].order;
     expect(freeDeliveryOrder.amount_cents).toBe(25000);
+    await db.exec("update commerce_stores set free_shipping_threshold_cents=90000 where id='still-form'");
+    await db.query("update commerce_variants set sku='CLERLY-NIA5-TRIO',price_cents=49900 where id=$1",[variant]);
+    const trioLines=JSON.stringify([{variantId:variant,qty:1}]);
+    const trioKey=crypto.randomUUID();
+    const trioOrder=(await create("still-form",user,trioKey,trioLines)).rows[0].order;
+    expect(trioOrder.amount_cents).toBe(49900);
+    expect((await create("still-form",user,trioKey,trioLines)).rows[0].order.id).toBe(trioOrder.id);
     for (const role of ["anon", "authenticated"]) {
       await db.exec(`set role ${role}`);
       await expect(db.query("select * from commerce_orders")).rejects.toThrow();

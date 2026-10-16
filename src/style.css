@@ -1196,6 +1196,11 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
 .has-product-images .gallery-thumbs img {height:auto;aspect-ratio:1;object-fit:contain;}
 .has-product-images .gallery-thumbs button:focus-visible {outline:3px solid var(--olive);outline-offset:3px;}
 
+/* Shared transparent brand artwork, sized for header and footer. */
+.wordmark {display:inline-flex;align-items:center;line-height:1;flex-shrink:0;}
+.wordmark img {display:block;width:156px;height:auto;}
+@media (max-width:700px) {.wordmark img {width:118px;}}
+
 /* Reference-inspired offer panel for the two cleansing bars. */
 .purchase-review-status {display:flex;align-items:center;gap:9px;margin:0 0 12px;font-size:12px;color:#62665d;line-height:1.4;}
 .purchase-review-status>span:first-child {color:#c19d43;font-size:23px;letter-spacing:1px;white-space:nowrap;}
@@ -1243,7 +1248,15 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
  .reference-purchase .bundle-reference {font-size:11px;}
 }
 
-/* Shared transparent brand artwork, sized for header and footer. */
-.wordmark {display:inline-flex;align-items:center;line-height:1;flex-shrink:0;}
-.wordmark img {display:block;width:156px;height:auto;}
-@media (max-width:700px) {.wordmark img {width:118px;}}
+/* Flagship serum merchandising. */
+.hero-serum-pricing {display:flex;flex-direction:column;gap:8px;margin:0 0 24px;}
+.hero-serum-pricing>strong {font-size:28px;color:var(--olive);}
+.hero-serum-pricing>span {font-size:12px;color:#5d6658;}
+.serum-hero .hero-art>img {object-position:center;}
+.sales-product-grid {grid-template-columns:repeat(4,minmax(0,1fr));}
+.bundle-shipping {font-size:11px;color:#315313;font-weight:800;}
+.serum-story-image {width:100%;max-height:560px;object-fit:cover;object-position:center;border-radius:2px;}
+.serum-offer-note {padding:40px;background:#eff3e7;align-self:center;}
+.serum-offer-note h3 {margin-top:24px;}
+@media(max-width:1000px) {.sales-product-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px) {.sales-product-grid {grid-template-columns:1fr;}.serum-hero .hero-art {min-height:520px;}.announcement {font-size:8px;letter-spacing:0;}}

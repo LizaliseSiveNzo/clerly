@@ -3,6 +3,7 @@ import {mkdirSync} from 'node:fs';
 import {dirname} from 'node:path';
 import {createClient} from '@supabase/supabase-js';
 import {render} from '../dist-ssr/prerender-entry.js';
+const preorderCatalog = JSON.parse(readFileSync("src/preorder-catalog.json", "utf8"));
 const brand = JSON.parse(readFileSync("src/brand.json", "utf8"));
 const escape = (value) =>
   String(value)
@@ -66,12 +67,12 @@ const routes = launch
     ]
   : [];
 if(launch) routes.push(...catalog.products.map(product=>`/products/${product.slug}`));
-const upcomingRoutes=launch?[]:['/products/turmeric-cleansing-bar','/products/african-black-soap-bar','/products/liquid-african-black-soap'];
+const upcomingRoutes=launch?[]:preorderCatalog.products.map(product=>`/products/${product.slug}`);
 const publicRoutes=['/','/shop','/about','/faq','/contact','/policies/delivery','/policies/returns','/policies/privacy','/policies/terms',...catalog.products.map(product=>`/products/${product.slug}`)];
 const allRoutes=[...publicRoutes,...upcomingRoutes,'/cart','/checkout','/account','/admin','/404'];
 const publicData=JSON.stringify(catalog).replaceAll('<','\\u003c');
 for(const path of allRoutes){
- const product=catalog.products.find(p=>path===`/products/${p.slug}`);
+ const product=(launch?catalog.products:preorderCatalog.products).find(p=>path===`/products/${p.slug}`);
  const title=product?`${product.title} Â· ${brand.name}`:path==='/'?`${brand.name} â€” ${brand.tagline}`:`${path.slice(1).replaceAll('/',' Â· ')} Â· ${brand.name}`;
  let page=html.replace(/<title>.*?<\/title>/,`<title>${escape(title)}</title>`);
  if(origin)page=page.replaceAll(`${escape(origin)}/\"`,`${escape(origin+path)}\"`);

@@ -54,12 +54,11 @@ function Header() {
   return (
     <>
       <div className="announcement">
-        Clérly first collection · Preorder · Free delivery from R900
+        Clérly flagship serum · Preorder · Free delivery with the serum trio
       </div>
       <header>
         <Link to="/" className="wordmark" aria-label={`${store.name} home`}>
           <img src="/clerly-logo-moss.png" alt={store.name} width={2036} height={772} />
-
         </Link>
         <button
           className="menu-toggle"
@@ -273,13 +272,13 @@ function About() {
         Familiar ingredients. Clear choices. A ritual you can make your own.
       </p>
       <p>
-        {store.name} begins with a cleansing collection: turmeric bars, solid
-        African black soap and liquid African black soap. Three choices,
+        {store.name} brings its flagship 5% Niacinamide Serum together with turmeric bars, solid
+        African black soap and liquid African black soap. Four choices,
         with a simple ambition: a considered ritual that feels at
         home in your everyday routine.
       </p>
       <h2>Know what goes into your ritual.</h2>
-      <p>We believe choosing a cleanser should start with the details: what’s inside, how it’s intended to be used, and what you can reasonably expect from it. Our product pages will share that information as each formula is confirmed.</p>
+      <p>We believe choosing skincare should start with the details: what’s inside, how it’s intended to be used, and what you can reasonably expect from it. Our product pages will share that information as each formula is confirmed.</p>
       <h2>Clarity before everything.</h2>
       <p>
         Before each product arrives, you’ll be able to explore its ingredients,
@@ -329,7 +328,7 @@ const policyContent: Record<string, [string, string[]]> = {
   delivery: [
     "Delivery",
     [
-      "South African delivery is R79 per order, or free on product totals of R900 or more. All amounts are shown in rands before payment.",
+      "South African delivery is R79 per order, or free with the three-bottle serum bundle or on product totals of R900 or more. All amounts are shown in rands before payment.",
       "This is a preorder collection. Estimated dispatch is 15–20 business days after payment confirmation. Estimated courier transit is 2–5 business days after dispatch. Business days exclude weekends and public holidays; these are estimates rather than guaranteed arrival dates.",
       "Tracking is provided after dispatch. Check your address before payment. If the dispatch estimate changes, we will inform you and offer cancellation before dispatch for a full refund.",
     ],
@@ -509,9 +508,9 @@ function Footer() {
           <Link to="/policies/returns">Returns</Link>
         </div>
         <p className="footer-note">
-          Turmeric &amp; African black soap.
+          Niacinamide, turmeric &amp; black soap.
           <br />
-          A new chapter in cleansing.
+          A new chapter in your ritual.
           <br />
           <em>Rooted in ritual.</em>
         </p>
