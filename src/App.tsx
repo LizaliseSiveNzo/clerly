@@ -27,7 +27,7 @@ function Arrow() {
 }
 function Empty({
   title = "Our first collection is in the making.",
-  text = "Turmeric bars, solid African black soap and liquid African black soap. Product details and availability will be shared before launch.",
+  text = "Explore our 5% Niacinamide Serum and Turmeric Cleansing Bar, with single-item and bundle options.",
 }: {
   title?: string;
   text?: string;
@@ -272,8 +272,7 @@ function About() {
         Familiar ingredients. Clear choices. A ritual you can make your own.
       </p>
       <p>
-        {store.name} brings its flagship 5% Niacinamide Serum together with turmeric bars, solid
-        African black soap and liquid African black soap. Four choices,
+        {store.name} brings its flagship 5% Niacinamide Serum together with our Turmeric Cleansing Bar. Two formats,
         with a simple ambition: a considered ritual that feels at
         home in your everyday routine.
       </p>
@@ -286,7 +285,7 @@ function About() {
         product-specific information as our range is confirmed.
       </p>
       <h2>Your choice, your pace.</h2>
-      <p>Start with the product that fits your preferences. Our solid and liquid black soap formats are choices to explore, rather than steps you have to combine.</p>
+      <p>Start with the product that fits your preferences. Our serum and turmeric cleansing bar are choices to explore at your own pace, rather than a compulsory routine.</p>
       <h2>Thoughtful from product to delivery.</h2>
       <p>Choose a single item or a multipack, see the full price before payment, and follow your delivery after dispatch. A good ritual starts with a clear choice.</p>
       <Link className="button" to="/shop">
@@ -508,7 +507,7 @@ function Footer() {
           <Link to="/policies/returns">Returns</Link>
         </div>
         <p className="footer-note">
-          Niacinamide, turmeric &amp; black soap.
+          Niacinamide &amp; turmeric.
           <br />
           A new chapter in your ritual.
           <br />

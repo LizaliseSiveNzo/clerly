@@ -1253,13 +1253,13 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
 .hero-serum-pricing>strong {font-size:28px;color:var(--olive);}
 .hero-serum-pricing>span {font-size:12px;color:#5d6658;}
 .serum-hero .hero-art>img {object-position:center;}
-.sales-product-grid {grid-template-columns:repeat(4,minmax(0,1fr));}
+.sales-product-grid,.bundle-feature-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
 .bundle-shipping {font-size:11px;color:#315313;font-weight:800;}
 .serum-story-image {width:100%;max-height:560px;object-fit:cover;object-position:center;border-radius:2px;}
 .serum-offer-note {padding:40px;background:#eff3e7;align-self:center;}
 .serum-offer-note h3 {margin-top:24px;}
 @media(max-width:1000px) {.sales-product-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:700px) {.sales-product-grid {grid-template-columns:1fr;}.serum-hero .hero-art {min-height:520px;}.announcement {font-size:8px;letter-spacing:0;}}
+@media(max-width:700px) {.sales-product-grid,.bundle-feature-grid {grid-template-columns:1fr;}.serum-hero .hero-art {min-height:520px;}.announcement {font-size:8px;letter-spacing:0;}}
 .serum-gallery .sales-main-image>img {object-fit:contain;background:#eee9df;}
 
 /* Product media: preserve complete packaging in each responsive frame. */
@@ -1286,3 +1286,4 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
   .serum-hero .hero-art {min-height:0;height:min(135vw,600px);}
   .serum-hero .hero-art>img {padding:16px;}
 }
+

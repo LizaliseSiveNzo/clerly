@@ -7,7 +7,7 @@ it("prices serum single, duo and trio with free shipping only on the eligible bu
   expect(quote(0)).toMatchObject({subtotal:19900,shipping:7900,total:27800});
   expect(quote(1)).toMatchObject({subtotal:34900,shipping:7900,total:42800});
   expect(quote(2)).toMatchObject({subtotal:49900,shipping:0,total:49900});
-  const soap=catalog.products.find(p=>p.slug === "african-black-soap-bar")!;
+  const soap=catalog.products.find(p=>p.slug === "turmeric-cleansing-bar")!;
   expect(preorderQuote({lines:[{variantId:serum.variants[2].id,qty:1},{variantId:soap.variants[0].id,qty:1}]}).shipping).toBe(0);
   expect(()=>preorderQuote({lines:[{variantId:serum.variants[0].id,qty:1,sku:"CLERLY-NIA5-TRIO"}]})).toThrow();
 });

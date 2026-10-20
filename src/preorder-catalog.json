@@ -1,6 +1,6 @@
 {
   "exchangeRate": 16.49,
-  "pricingSource": "Serum: R199 single 50ml, R349 duo, R499 trio with free standard delivery, as discussed. Soap prices retain the previous converted pricing.",
+  "pricingSource": "Serum: R199 single 50ml, R349 duo, R499 trio with free standard delivery, as discussed. Turmeric soap prices retain the previous converted pricing.",
   "shippingCents": 7900,
   "freeShippingThresholdCents": 90000,
   "dispatch": "15–20 business days",
@@ -128,108 +128,6 @@
         }
       ],
       "unitKind": "bar"
-    },
-    {
-      "id": "bf000000-0000-4000-8000-000000000002",
-      "slug": "african-black-soap-bar",
-      "title": "Clérly African Black Soap Bar",
-      "description": "A familiar cleansing tradition in solid form. Make room for African black soap in your ritual.",
-      "collection": "cleanse",
-      "ingredients": "The final ingredient list and fragrance information will be confirmed with the supplier before dispatch.",
-      "usage": "Final intended use, application and care directions will accompany the product.",
-      "delivery": "Preorder: estimated dispatch in 15–20 business days. Allow 2–5 business days for delivery after dispatch.",
-      "images": [
-        {
-          "url": "/blkd-black-soap-bar.svg",
-          "alt": "Clérly African Black Soap Bar — packaging concept; photography placeholder"
-        }
-      ],
-      "published": true,
-      "demo": false,
-      "variants": [
-        {
-          "id": "bf000000-0000-4000-8000-000000000201",
-          "label": "Single bar",
-          "sku": "BLKD-2-1",
-          "size": "1 bar",
-          "price_cents": 44853,
-          "stock": 0,
-          "units": 1,
-          "bundleImage": ""
-        },
-        {
-          "id": "bf000000-0000-4000-8000-000000000202",
-          "label": "Two-bar bundle",
-          "sku": "BLKD-2-2",
-          "size": "2 bars",
-          "price_cents": 68598,
-          "stock": 0,
-          "units": 2,
-          "bundleImage": ""
-        },
-        {
-          "id": "bf000000-0000-4000-8000-000000000203",
-          "label": "Three-bar bundle",
-          "sku": "BLKD-2-3",
-          "size": "3 bars",
-          "price_cents": 94982,
-          "stock": 0,
-          "units": 3,
-          "bundleImage": ""
-        }
-      ],
-      "unitKind": "bar"
-    },
-    {
-      "id": "bf000000-0000-4000-8000-000000000003",
-      "slug": "liquid-african-black-soap",
-      "title": "Clérly Liquid African Black Soap",
-      "description": "African black soap in a liquid format. Choose the bottle for a different way to cleanse.",
-      "collection": "cleanse",
-      "ingredients": "The final ingredient list and fragrance information will be confirmed with the supplier before dispatch.",
-      "usage": "Final intended use, application and care directions will accompany the product.",
-      "delivery": "Preorder: estimated dispatch in 15–20 business days. Allow 2–5 business days for delivery after dispatch.",
-      "images": [
-        {
-          "url": "/blkd-cleanser.svg",
-          "alt": "Clérly Liquid African Black Soap — packaging concept; photography placeholder"
-        }
-      ],
-      "published": true,
-      "demo": false,
-      "variants": [
-        {
-          "id": "bf000000-0000-4000-8000-000000000301",
-          "label": "Single bottle",
-          "sku": "BLKD-3-1",
-          "size": "1 bottle",
-          "price_cents": 44853,
-          "stock": 0,
-          "units": 1,
-          "bundleImage": ""
-        },
-        {
-          "id": "bf000000-0000-4000-8000-000000000302",
-          "label": "Two-bottle bundle",
-          "sku": "BLKD-3-2",
-          "size": "2 bottles",
-          "price_cents": 68598,
-          "stock": 0,
-          "units": 2,
-          "bundleImage": ""
-        },
-        {
-          "id": "bf000000-0000-4000-8000-000000000303",
-          "label": "Three-bottle bundle",
-          "sku": "BLKD-3-3",
-          "size": "3 bottles",
-          "price_cents": 94982,
-          "stock": 0,
-          "units": 3,
-          "bundleImage": ""
-        }
-      ],
-      "unitKind": "bottle"
     }
   ],
   "freeShippingSkus": [
