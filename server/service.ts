@@ -16,6 +16,32 @@ export class HttpError extends Error {
   }
 }
 type Input = { path: string; method: string; headers: Headers; raw: string };
+const toRootRelative = (url: string, origin: string): string => {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    return origin && u.origin === origin ? u.pathname + u.search + u.hash : url;
+  } catch {
+    return url;
+  }
+};
+const withRootRelativeImages = (products: unknown[] | null | undefined) => {
+  let origin = "";
+  try {
+    origin = siteOrigin();
+  } catch {
+    origin = "";
+  }
+  return (products ?? []).map((product) => {
+    const p = product as { images?: { url?: string }[] };
+    return {
+      ...p,
+      images: Array.isArray(p.images)
+        ? p.images.map((image) => ({ ...image, url: toRootRelative(image?.url || "", origin) }))
+        : p.images,
+    };
+  });
+};
 export const checkoutSchema = z
   .object({
     requestKey: z.string().uuid(),
@@ -153,7 +179,7 @@ export async function service(input: Input) {
       }
     }
     return {
-      products: settings.launched ? availableProducts : [],
+      products: settings.launched ? withRootRelativeImages(availableProducts) : [],
       checkoutEnabled:
         checkoutOpen() &&
         settings.launched &&

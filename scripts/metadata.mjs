@@ -17,6 +17,21 @@ const raw =
   process.env.SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
 const origin = raw ? new URL(raw).origin : "";
+const toRootRelative = (url) => {
+  if (typeof url !== "string" || url === "") return url;
+  try {
+    const u = new URL(url);
+    return origin && u.origin === origin ? u.pathname + u.search + u.hash : url;
+  } catch {
+    return url;
+  }
+};
+const normalizeImages = (product) => ({
+  ...product,
+  images: Array.isArray(product.images)
+    ? product.images.map((image) => ({ ...image, url: toRootRelative(image && image.url) }))
+    : product.images,
+});
 let catalog={products:[],checkoutEnabled:false,ready:false};
 if(launch){
  if(!origin.startsWith('https://')||!process.env.SUPABASE_URL||!process.env.SUPABASE_SERVICE_ROLE_KEY)throw new Error('Launch needs an HTTPS canonical URL and server database configuration.');
@@ -25,7 +40,7 @@ if(launch){
  if(settingsError||!settings?.launched)throw new Error('Registry is not launched; keep the coming-soon build enabled.');
  const {data:products,error}=await db.from('commerce_products').select('id,slug,title,description,collection,ingredients,usage,delivery,images,published,demo,variants:commerce_variants(id,label,sku,size,price_cents,stock)').eq('store_id',brand.id).eq('published',true).eq('demo',false);
  if(error)throw new Error('Could not load public launch products.');
- catalog={products:products||[],checkoutEnabled:false,ready:true};
+ catalog={products:(products||[]).map(normalizeImages),checkoutEnabled:false,ready:true};
 }
 if (launch && !origin)
   throw new Error("Set the canonical SITE_URL before indexing.");
