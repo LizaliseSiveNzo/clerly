@@ -1261,3 +1261,28 @@ body:has(.sticky-purchase) footer {padding-bottom:110px;}
 @media(max-width:1000px) {.sales-product-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:700px) {.sales-product-grid {grid-template-columns:1fr;}.serum-hero .hero-art {min-height:520px;}.announcement {font-size:8px;letter-spacing:0;}}
 .serum-gallery .sales-main-image>img {object-fit:contain;background:#eee9df;}
+
+/* Product media: preserve complete packaging in each responsive frame. */
+.sales-main-image {height:clamp(320px,calc(100svh - 300px),560px);}
+.sales-main-image>img,.has-product-images .sales-main-image>img {
+  width:100%;height:100%;aspect-ratio:auto;object-fit:contain;object-position:center;
+  padding:16px 16px 44px;box-sizing:border-box;
+}
+.sales-card-image {aspect-ratio:4/5;}
+.sales-card-image img {
+  position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;
+  object-fit:contain;object-position:center;padding:12px;box-sizing:border-box;
+}
+.sales-card-image:hover img {transform:none;}
+.sales-gallery .gallery-thumbs img {height:76px;aspect-ratio:auto;object-fit:contain;object-position:center;}
+.bundle-image-placeholder img,.sales-cart-grid .cart-line>img,.checkout-line img {object-fit:contain;object-position:center;}
+.serum-hero .hero-art {background:#eee9df;}
+.serum-hero .hero-art>img {object-fit:contain;object-position:center;padding:24px;box-sizing:border-box;}
+.serum-story-image {object-fit:contain;background:#eee9df;}
+@media(max-width:700px) {
+  .sales-main-image {height:min(110vw,480px);}
+  .sales-main-image>img,.has-product-images .sales-main-image>img {padding:12px 12px 40px;}
+  .sales-gallery .gallery-thumbs img {height:64px;}
+  .serum-hero .hero-art {min-height:0;height:min(135vw,600px);}
+  .serum-hero .hero-art>img {padding:16px;}
+}
