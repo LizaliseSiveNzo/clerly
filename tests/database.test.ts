@@ -14,6 +14,7 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
     await db.exec(readFileSync("database/proposed-shared-schema.sql", "utf8"));
     await db.exec(readFileSync("database/serum-trio-delivery.sql", "utf8"));
     await db.exec(readFileSync("database/shared-preorder-cap.sql", "utf8"));
+    await db.exec(readFileSync("database/order-notifications.sql", "utf8"));
     expect(
       (
         await db.query<{ store_id: string; total_amount: number }>(
@@ -126,6 +127,16 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
         .rows[0].status,
     ).toBe("paid");
     expect((await db.query("select * from orders")).rows).toHaveLength(1);
+    const claim=(store="still-form",payload={text:"Original paid-order email"})=>db.query<{job:{state:string;lease?:string;payload?:unknown}}>("select commerce_claim_order_notification($1,$2,$3) as job",[store,order.id,JSON.stringify(payload)]);
+    expect((await claim("revid")).rows[0].job.state).toBe("ineligible");
+    expect((await claim()).rows[0].job.state).toBe("claimed");
+    expect((await claim()).rows[0].job.state).toBe("busy");
+    await db.exec("update commerce_order_notifications set lease_until=now()-interval '1 second'");
+    expect((await claim("still-form",{text:"Changed retry"})).rows[0].job.payload).toEqual({text:"Original paid-order email"});
+    await db.exec("update commerce_order_notifications set status='sent',first_attempt_at=now()-interval '2 days'");
+    expect((await claim()).rows[0].job.state).toBe("sent");
+    await db.exec("update commerce_order_notifications set status='pending',lease_until=null");
+    expect((await claim()).rows[0].job.state).toBe("needs_review");
     const second = (
       await create(
         "still-form",
@@ -170,6 +181,8 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
     for (const role of ["anon", "authenticated"]) {
       await db.exec(`set role ${role}`);
       await expect(db.query("select * from commerce_orders")).rejects.toThrow();
+      await expect(db.query("select * from commerce_order_notifications")).rejects.toThrow();
+      await expect(claim()).rejects.toThrow();
       await expect(create("still-form")).rejects.toThrow();
       await db.exec("reset role");
     }

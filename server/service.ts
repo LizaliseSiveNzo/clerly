@@ -6,6 +6,7 @@ import { STORE_ID, siteOrigin, checkoutOpen } from "./settings.js";
 import { verifyYocoSignature } from "./yoco-signature.js";
 import { preorderQuote } from "./preorder-quote.js";
 import { PREORDER_TERMS_VERSION } from "../src/lib/preorder-terms.js";
+import { notifyOwnerOfPaidOrder } from "./order-notifications.js";
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -109,6 +110,13 @@ export async function service(input: Input) {
       p_payload: event,
     });
     check(error);
+    if (event.type === "payment.succeeded") {
+      try { await notifyOwnerOfPaidOrder(db,order.id); }
+      catch {
+        console.error("Paid order notification pending", {orderId:order.id});
+        throw new HttpError(503,"Payment recorded; order notification awaits retry.");
+      }
+    }
     return { result: data };
   }
   if ((path === "catalog" && method === "GET") || (path === "preorder-quote" && method === "POST")) {
