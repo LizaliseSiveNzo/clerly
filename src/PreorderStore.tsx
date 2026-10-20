@@ -61,9 +61,13 @@ function Confidence() {
   </div><TrustStrip /></section>;
 }
 function Feedback() {
-  return <section className="section feedback-section"><div className="section-heading"><div><p className="eyebrow">THE FIRST Clérly STORIES</p><h2>Your ritual.<br/><em>Your experience.</em></h2></div><span className="review-empty">Customer reviews will appear after launch.</span></div>
-    <div className="story-grid"><PhotoSlot title="Customer routine photograph"/><PhotoSlot title="Product demonstration video"/><PhotoSlot title="Customer product photograph"/></div>
-    <p className="concept-note">These spaces are reserved for genuine customer photographs and feedback. No customer results are represented by these placeholders.</p>
+  return <section className="section feedback-section"><div className="section-heading"><div><p className="eyebrow">THE CLÉRLY RITUAL</p><h2>Your skincare.<br/><em>A moment for you.</em></h2></div><span className="review-empty">Make room for your daily ritual.</span></div>
+    <div className="story-grid ritual-grid">
+      <figure><img className="ritual-lifestyle" src="/ritual/clerly-bottle-lifestyle.webp" alt="Skincare lifestyle concept showing a woman holding a frosted Clérly bottle" width="1024" height="1536" loading="lazy"/><figcaption>Your daily skincare ritual.</figcaption></figure>
+      <figure><img className="ritual-face" src="/ritual/serum-face-application.webp" alt="Skincare inspiration: serum being applied to a cheek with a glass dropper" width="1117" height="1600" loading="lazy"/><figcaption>A few drops. A daily ritual.</figcaption></figure>
+      <figure><img className="ritual-dropper" src="/ritual/serum-dropper-detail.webp" alt="Skincare inspiration: a glass dropper dispensing serum above an open palm" width="1068" height="1600" loading="lazy"/><figcaption>Simple moments of care.</figcaption></figure>
+    </div>
+    <p className="concept-note">Skincare inspiration using stock photography, including an AI-edited Clérly packaging mockup. These images do not represent customer reviews or results.</p>
   </section>;
 }
 const questions = [

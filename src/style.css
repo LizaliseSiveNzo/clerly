@@ -1015,6 +1015,12 @@ details p {
 .bundle-feature .text-link {margin-top:22px;}
 .review-empty {font-size:12px;color:#5d6658;max-width:200px;line-height:1.6;}
 .feedback-section .concept-note {margin-top:20px;}
+.ritual-grid figure {margin:0;min-width:0;}
+.ritual-grid img {display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;background:#eeeadf;}
+.ritual-grid .ritual-lifestyle {object-position:50% 45%;}
+.ritual-grid .ritual-face {object-position:58% 50%;}
+.ritual-grid .ritual-dropper {object-position:50% 50%;}
+.ritual-grid figcaption {padding-top:18px;font:400 22px/1.3 Georgia,serif;color:var(--olive);}
 .sales-faq {max-width:850px;}
 .sales-faq details {padding:22px 0;}
 .sales-faq summary {font-size:16px;}
