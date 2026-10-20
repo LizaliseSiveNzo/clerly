@@ -114,7 +114,7 @@ export async function service(input: Input) {
   if ((path === "catalog" && method === "GET") || (path === "preorder-quote" && method === "POST")) {
     const { data: settings, error: settingsError } = await db
       .from("commerce_stores")
-      .select("launched,checkout_enabled,shipping_cents,free_shipping_threshold_cents,policies_approved")
+      .select("launched,checkout_enabled,shipping_cents,free_shipping_threshold_cents,policies_approved,preorder_order_limit")
       .eq("id", STORE_ID)
       .single();
     check(settingsError);
@@ -127,10 +127,17 @@ export async function service(input: Input) {
       .eq("demo", false)
       .order("title");
     check(error);
+    let batchFull = false;
+    if (settings.preorder_order_limit !== null && settings.preorder_order_limit !== undefined) {
+      const {count,error:capacityError} = await db.from("commerce_orders").select("id",{count:"exact",head:true}).eq("store_id",STORE_ID).neq("status","failed");
+      check(capacityError);
+      batchFull = (count ?? 0) >= settings.preorder_order_limit;
+    }
+    const availableProducts = batchFull ? (products ?? []).map(product=>({...product,variants:product.variants.map((variant:{stock:number})=>({...variant,stock:0}))})) : products;
     if (path === "preorder-quote") {
       if (!settings.launched || settings.shipping_cents === null)
         throw new HttpError(409, "Live catalogue is not ready for payment.");
-      const validated = z.array(productSchema).parse(products);
+      const validated = z.array(productSchema).parse(availableProducts);
       try { return preorderQuote(JSON.parse(raw), {products:validated,shippingCents:settings.shipping_cents,freeShippingThresholdCents:settings.free_shipping_threshold_cents ?? null,enforceStock:true}); }
       catch (error) {
         if (error instanceof z.ZodError || error instanceof SyntaxError) throw error;
@@ -138,12 +145,13 @@ export async function service(input: Input) {
       }
     }
     return {
-      products: settings.launched ? products : [],
+      products: settings.launched ? availableProducts : [],
       checkoutEnabled:
         checkoutOpen() &&
         settings.launched &&
         settings.checkout_enabled &&
         settings.policies_approved &&
+        !batchFull &&
         settings.shipping_cents !== null,
       shippingCents: settings.shipping_cents,
       freeShippingThresholdCents: settings.free_shipping_threshold_cents,
@@ -187,7 +195,7 @@ export async function service(input: Input) {
     if (error)
       throw new HttpError(
         409,
-        "Checkout is closed or an item is unavailable. Refresh your cart.",
+        error.message.includes("Preorder batch is full") ? "The first preorder batch is fully reserved. Please check back for the next release." : "Checkout is closed or an item is unavailable. Refresh your cart.",
       );
     if (order.status !== "pending")
       throw new HttpError(409, "This order has already been processed.");

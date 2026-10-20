@@ -13,6 +13,7 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
    insert into auth.users values('00000000-0000-4000-8000-000000000002'),('00000000-0000-4000-8000-000000000003');`);
     await db.exec(readFileSync("database/proposed-shared-schema.sql", "utf8"));
     await db.exec(readFileSync("database/serum-trio-delivery.sql", "utf8"));
+    await db.exec(readFileSync("database/shared-preorder-cap.sql", "utf8"));
     expect(
       (
         await db.query<{ store_id: string; total_amount: number }>(
@@ -161,6 +162,11 @@ it("executes additive schema, policies, authoritative orders, inventory and idem
     const trioOrder=(await create("still-form",user,trioKey,trioLines)).rows[0].order;
     expect(trioOrder.amount_cents).toBe(49900);
     expect((await create("still-form",user,trioKey,trioLines)).rows[0].order.id).toBe(trioOrder.id);
+    await db.exec("update commerce_variants set stock=20; update commerce_stores set preorder_order_limit=(select count(*)+1 from commerce_orders where store_id='still-form' and status<>'failed') where id='still-form'");
+    const capKey=crypto.randomUUID();
+    const lastOrder=(await create("still-form",user,capKey,trioLines)).rows[0].order;
+    expect((await create("still-form",user,capKey,trioLines)).rows[0].order.id).toBe(lastOrder.id);
+    await expect(create("still-form",other,crypto.randomUUID(),trioLines)).rejects.toThrow("Preorder batch is full");
     for (const role of ["anon", "authenticated"]) {
       await db.exec(`set role ${role}`);
       await expect(db.query("select * from commerce_orders")).rejects.toThrow();
