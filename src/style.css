@@ -1005,6 +1005,9 @@ details p {
 .photo-slot.wide {aspect-ratio:16/9;}
 .split-story,.product-story,.evidence-section {display:grid;grid-template-columns:1fr 1fr;gap:8%;align-items:center;}
 .split-story p,.product-story p,.evidence-section p {max-width:530px;}
+.home-ritual-image {margin:0;min-width:0;}
+.home-ritual-image img {display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:contain;background:#e8ece5;}
+.home-ritual-image figcaption {margin-top:12px;font-size:11px;letter-spacing:.08em;color:var(--olive);}
 .confidence-section,.process-section {background:#e9ece1;}
 .confidence-section .commerce-trust {padding-inline:0;margin-top:50px;justify-content:space-between;gap:25px;}
 .bundle-feature-grid {margin-top:40px;}
