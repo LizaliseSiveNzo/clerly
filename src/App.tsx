@@ -260,39 +260,12 @@ function Account() {
   );
 }
 function About() {
-  return (
-    <div className="page narrow">
-      <p className="eyebrow">OUR APPROACH</p>
-      <h1>
-        African roots.
-        <br />
-        <em>Everyday ritual.</em>
-      </h1>
-      <p className="intro">
-        Familiar ingredients. Clear choices. A ritual you can make your own.
-      </p>
-      <p>
-        {store.name} brings its flagship 5% Niacinamide Serum together with our Turmeric Cleansing Bar. Two formats,
-        with a simple ambition: a considered ritual that feels at
-        home in your everyday routine.
-      </p>
-      <h2>Know what goes into your ritual.</h2>
-      <p>We believe choosing skincare should start with the details: what’s inside, how it’s intended to be used, and what you can reasonably expect from it. Our product pages will share that information as each formula is confirmed.</p>
-      <h2>Clarity before everything.</h2>
-      <p>
-        Before each product arrives, you’ll be able to explore its ingredients,
-        sizes, available options, price and delivery information. We’ll share
-        product-specific information as our range is confirmed.
-      </p>
-      <h2>Your choice, your pace.</h2>
-      <p>Start with the product that fits your preferences. Our serum and turmeric cleansing bar are choices to explore at your own pace, rather than a compulsory routine.</p>
-      <h2>Thoughtful from product to delivery.</h2>
-      <p>Choose a single item or a multipack, see the full price before payment, and follow your delivery after dispatch. A good ritual starts with a clear choice.</p>
-      <Link className="button" to="/shop">
-        Find your format <Arrow />
-      </Link>
-    </div>
-  );
+  return <>
+    <section className="about-hero"><div><p className="eyebrow">THE THINKING BEHIND CLÉRLY</p><h1>Everyday care.<br/><em>A little more considered.</em></h1><p className="intro">We believe a daily routine can be something you look forward to. A small pause. A familiar ritual. A choice that feels like you.</p><Link className="text-link" to="/shop">Meet the collection <Arrow/></Link></div><img src="/ritual/clerly-bottle-lifestyle.webp" alt="Clérly skincare lifestyle packaging mockup against a sage background" width="1024" height="1536"/></section>
+    <section className="section about-manifesto"><p className="eyebrow">OUR POINT OF VIEW</p><h2>Less noise.<br/>More room for <em>you.</em></h2><p>Clérly brings together a flagship 5% Niacinamide Serum and a turmeric cleansing bar. Two distinct formats, with a simple ambition: a considered ritual that feels at home in your everyday routine.</p><p>We start with choice, rather than complication. Explore the details, find your format, and make your routine your own.</p></section>
+    <section className="section about-values"><div className="section-heading"><div><p className="eyebrow">WHAT GUIDES US</p><h2>Thoughtful by nature.<br/><em>Clear by choice.</em></h2></div></div><div className="details-grid"><div><span className="principle-number">01</span><h3>Clarity.</h3><p>Product information, price and delivery details should be easy to find and understand. Supplier-confirmed formula information is shared before dispatch.</p></div><div><span className="principle-number">02</span><h3>Individuality.</h3><p>Your routine belongs to you. Choose one essential or a bundle, without a compulsory regimen or subscription.</p></div><div><span className="principle-number">03</span><h3>Consideration.</h3><p>From a focused collection to clear preorder terms and tracked delivery, the small details shape the whole experience.</p></div></div></section>
+    <section className="section split-story"><figure className="home-ritual-image"><img src="/serum/clerly-niacinamide-concept.webp" alt="Clérly frosted serum bottle packaging concept with botanical details" width="893" height="1600" loading="lazy"/><figcaption>THE FLAGSHIP / PACKAGING CONCEPT</figcaption></figure><div><p className="eyebrow">THE COLLECTION, CHAPTER ONE</p><h2>A small collection.<br/><em>A world of possibility.</em></h2><p>Meet the serum. Discover the cleansing bar. Find the format that fits your daily life, then take it at your own pace.</p><Link className="button" to="/shop">Find your ritual <Arrow/></Link></div></section>
+  </>;
 }
 function FAQ() {
   return (
@@ -305,23 +278,7 @@ function FAQ() {
   );
 }
 function Contact() {
-  return (
-    <div className="page narrow">
-      <p className="eyebrow">LET’S TALK</p>
-      <h1>A little connection.</h1>
-      <p className="intro">We’re preparing our customer support channels.</p>
-      {store.contactEmail ? (
-        <a className="text-link" href={`mailto:${store.contactEmail}`}>
-          {store.contactEmail}
-        </a>
-      ) : (
-        <p>Our contact details will be published here before orders open.</p>
-      )}
-      <Link className="text-link" to="/faq">
-        Read our frequently asked questions <Arrow />
-      </Link>
-    </div>
-  );
+  return <div className="page contact-editorial"><div className="collection-title"><p className="eyebrow">HERE TO HELP</p><h1>A little<br/><em>connection.</em></h1><p className="intro">A clear answer is a good place to start.<br/>Find the details for your Clérly order below.</p></div><div className="help-card-grid"><Link to="/faq"><span>01 / YOUR QUESTIONS</span><h2>Good to know.</h2><p>Products, preorders and the details of your daily ritual.</p><span className="text-link">Explore answers <Arrow/></span></Link><Link to="/policies/delivery"><span>02 / YOUR DELIVERY</span><h2>On its way.</h2><p>Dispatch estimates, delivery charges and tracking information.</p><span className="text-link">Delivery details <Arrow/></span></Link><Link to="/policies/returns"><span>03 / PEACE OF MIND</span><h2>Change of plans?</h2><p>Preorder cancellations, unopened returns and your options.</p><span className="text-link">Returns & cancellations <Arrow/></span></Link></div>{store.contactEmail&&<p className="contact-direct">Something else on your mind? <a href={`mailto:${store.contactEmail}`}>{store.contactEmail}</a></p>}<Link className="button" to="/account">Visit your account <Arrow/></Link></div>;
 }
 const policyContent: Record<string, [string, string[]]> = {
   delivery: [
@@ -487,6 +444,7 @@ function Admin() {
 function Footer() {
   return (
     <footer>
+      <div className="footer-invitation"><span>EVERYDAY CARE. CONSIDERED.</span><Link to="/shop">Find your next ritual <Arrow/></Link></div>
       <div className="footer-top">
         <div>
           <Link to="/" className="wordmark">
@@ -514,6 +472,7 @@ function Footer() {
           <em>Rooted in ritual.</em>
         </p>
       </div>
+      <div className="footer-wordmark" aria-hidden="true">Clérly<span>✦</span></div>
       <div className="footer-bottom">
         <span>
           © {new Date().getFullYear()} {store.name}
