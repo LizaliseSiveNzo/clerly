@@ -1475,3 +1475,19 @@ footer .wordmark img {filter:brightness(0) invert(93%) sepia(10%) saturate(300%)
  .hero-bottomline {margin-top:26px;}
  .sales-product-top {padding-top:30px;}
 }
+/* Conversion-focused shopping feedback and account handoff. */
+.purchase-added {border:1px solid #b9caaa;background:#edf4e5;padding:18px 20px;margin-block:20px;color:#2e4b31;}
+.purchase-added>strong,.purchase-added>span {display:block;margin-bottom:8px;}
+.purchase-added>div {display:flex;align-items:center;gap:25px;flex-wrap:wrap;margin-top:15px;}
+.purchase-added .button {min-height:44px;padding:12px 18px;font-size:11px;}
+.purchase-added .text-link {font-size:12px;}
+.purchase-delivery-line {font-size:11px;line-height:1.7;color:#536d49;margin:16px 0;}
+.cart-trio-offer {display:block;border:1px solid #bfcfae;background:#f4f7ed;padding:15px;margin-top:20px;}
+.cart-trio-offer strong,.cart-trio-offer span {display:block;font-size:12px;line-height:1.7;}
+.cart-trio-offer span {font-size:10px;color:#5c7250;margin-top:4px;}
+.checkout-signin {border:1px solid #c8d4b9;background:#edf2e4;padding:22px;margin-bottom:32px;}
+.checkout-signin strong {font-size:17px;color:#334e38;}
+.checkout-signin p {font-size:12px;margin:10px 0 18px;}
+.checkout-signin .button {font-size:11px;gap:20px;}
+.account-return-note {padding:18px 20px;background:#edf2e4;font-size:13px;}
+@media(max-width:700px){.purchase-added {padding:16px;}.purchase-added>div {gap:20px;}.sticky-purchase .button {font-size:10px;gap:12px;}.checkout-signin {padding:18px;}}

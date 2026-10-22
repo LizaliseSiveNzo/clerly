@@ -10,6 +10,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
   useParams,
 } from "react-router-dom";
 import { store, money, siteUrl } from "./config";
@@ -120,6 +121,11 @@ type Order = {
   items: { title: string; label: string; qty: number }[];
 };
 function Account() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const next = new URLSearchParams(location.search).get("next");
+  const returnTo = next === "/checkout" || next === "/cart" ? next : "";
+  const { items: accountBag } = useCart();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
@@ -148,6 +154,7 @@ function Account() {
     if (!auth) return;
     setBusy(true);
     const { error } = await auth.auth.signInWithPassword({ email, password });
+    if (!error && returnTo) navigate(returnTo);
     setMessage(
       error ? "Could not sign in. Check your email and password." : "",
     );
@@ -171,7 +178,8 @@ function Account() {
   return (
     <div className="page narrow">
       <p className="eyebrow">YOUR ACCOUNT</p>
-      <h1>Your account.</h1>
+      <h1>{returnTo ? "One step closer." : "Your account."}</h1>
+      {returnTo && <p className="account-return-note">Sign in or create an account to continue. Your bag and delivery details stay saved.</p>}
       {!auth ? (
         <Empty
           title="Accounts are being prepared."
@@ -180,6 +188,7 @@ function Account() {
       ) : user ? (
         <>
           <p>Signed in as {user}.</p>
+          {(returnTo || accountBag.length>0) && <Link className="button" to={returnTo || "/checkout"}>Continue to checkout <Arrow/></Link>}
           <button
             className="text-link"
             onClick={() => void auth?.auth.signOut()}
@@ -306,10 +315,9 @@ const policyContent: Record<string, [string, string[]]> = {
   privacy: [
     "Privacy",
     [
-      "This policy is being prepared before launch.",
-      "Customer identities use the same authentication service as our related store. This storefront restricts order access to the signed-in customer and this store.",
-      "We use the Meta Pixel to measure page visits and advertising performance. It sends page-view events and browser/device information to Meta and may use cookies to connect visits with advertising activity. We do not add customer names, email addresses, delivery details or payment information to these events.",
-      "Before orders open, we will publish the business identity, privacy contact, retention periods, processors, customer rights and consent information.",
+      "We use the information you provide to manage your account, process your order and arrange delivery. Your order history is available through your signed-in account.",
+      "Payments are handled through Yoco’s hosted checkout. Clérly does not collect or store your card details.",
+      "We use cookies and advertising measurement services to understand website visits and improve our advertising. Meta receives page-visit and browser information for this purpose. We do not add your name, email address, delivery address or payment details to these advertising events.",
     ],
   ],
   terms: [
