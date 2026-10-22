@@ -40,7 +40,7 @@ function PreorderNotice() {
   return <div className="preorder-note"><strong>Preorder dispatch: {catalog.dispatch}</strong><p>Estimated delivery: {catalog.transit}. {money(catalog.shippingCents)} delivery; free with the serum trio or from {money(catalog.freeShippingThresholdCents)}.</p><Link to="/policies/delivery">Delivery details →</Link></div>;
 }
 function addLine(cart: ReturnType<typeof useCart>, product: Item, variant: Item["variants"][number], qty: number) {
-  cart.add({storeId:store.id,productId:product.id,variantId:variant.id,title:product.title,label:variant.label,image:product.images[0].url,unitPrice:variant.price_cents,qty});
+  cart.add({storeId:store.id,productId:product.id,variantId:variant.id,title:product.title,label:variant.label,image:variant.bundleImage||product.images[0].url,unitPrice:variant.price_cents,qty});
 }
 function ProductCards() {
   const products = useSalesProducts();
@@ -101,7 +101,8 @@ export function SalesHome() {
 }
 function BundleCards() {
   const products = useSalesProducts().filter(p=>!p.comingSoon&&p.variants.length>1);
-  return <div className="bundle-feature-grid">{products.map(product=>{const offer=product.variants[1];const saving=product.variants[0].price_cents*offer.units-offer.price_cents;return <Link className="bundle-feature" to={`/products/${product.slug}?bundle=${offer.id}`} key={offer.id}><div className="bundle-art" aria-hidden="true"><img src={product.images[0].url} alt="" loading="lazy"/><img src={product.images[0].url} alt="" loading="lazy"/>{offer.units===3&&<img src={product.images[0].url} alt="" loading="lazy"/>}<span>{offer.units} × {isSerum(product)?"50ML":"BARS"}</span></div><div className="bundle-card-copy"><p className="eyebrow">THE EVERYDAY SET / BUNDLE & SAVE</p><h3>{product.title}</h3><p>{offer.label}</p><strong>{money(offer.price_cents)}</strong><span>Save {money(saving)} compared with singles</span><span className="text-link">Discover the set <Arrow/></span></div></Link>})}</div>;
+  const offers = products.flatMap(product=>(isSerum(product)?product.variants.slice(1):product.variants.slice(1,2)).map(offer=>({product,offer})));
+  return <div className="bundle-feature-grid">{offers.map(({product,offer})=>{const saving=product.variants[0].price_cents*offer.units-offer.price_cents;return <Link className="bundle-feature" to={`/products/${product.slug}?bundle=${offer.id}`} key={offer.id}><div className={`bundle-art ${offer.bundleImage?"has-bundle-photo":""}`} aria-hidden="true">{offer.bundleImage?<img className="bundle-photo" src={offer.bundleImage} alt="" loading="lazy"/>:<><img src={product.images[0].url} alt="" loading="lazy"/><img src={product.images[0].url} alt="" loading="lazy"/>{offer.units===3&&<img src={product.images[0].url} alt="" loading="lazy"/>}</>}<span>{offer.units} × {isSerum(product)?"50ML":"BARS"}</span></div><div className="bundle-card-copy"><p className="eyebrow">{isSerum(product)&&offer.units===3?"THE BEST-VALUE TRIO / FREE DELIVERY":"THE EVERYDAY SET / BUNDLE & SAVE"}</p><h3>{product.title}</h3><p>{offer.label}</p><strong>{money(offer.price_cents)}</strong><span>Save {money(saving)} compared with singles</span><span className="text-link">Discover the set <Arrow/></span></div></Link>})}</div>;
 }
 export function SalesShop() {
   return <div className="page shop-editorial"><div className="collection-title"><p className="eyebrow">THE CLÉRLY COLLECTION</p><h1>Your daily<br/><em>essentials.</em></h1><p className="intro">Two thoughtful formats. One ritual that is entirely yours.<br/>Discover the serum and the cleansing bar.</p><span className="collection-count">01 — 02 / THE FIRST COLLECTION</span></div><PreorderNotice/><ProductCards/><section className="catalog-bundles"><h2>Bundle your ritual.</h2><BundleCards/></section><TrustStrip/></div>;
@@ -133,7 +134,7 @@ export function SalesProduct() {
   const boldPurchase = isBar || serum;
   const hasGallery = product.images.length > 1;
   const galleryLabels = serum ? ["Packaging", "In use", "Texture"] : hasGallery ? product.images.map((_, i) => turmericPhotoLabels[i] || `Image ${i + 1}`) : ["Packaging", "In use", "Texture"];
-  const galleryImages = serum ? [product.images[0], {url:"/serum/clerly-serum-in-use.webp",alt:"Serum application inspiration: a woman applying serum to her cheek with a dropper — stock photograph"}, product.images[1]] : hasGallery ? product.images : [product.images[0], undefined, undefined];
+  const galleryImages = serum ? [{...product.images[0],url:variant.bundleImage||product.images[0].url,alt:variant.bundleImage?`Clérly serum ${variant.units===2?"duo":"trio"} — packaging concept`:product.images[0].alt}, {url:"/serum/clerly-serum-in-use.webp",alt:"Serum application inspiration: a woman applying serum to her cheek with a dropper — stock photograph"}, product.images[1]] : hasGallery ? product.images : [product.images[0], undefined, undefined];
   const activeImage = galleryImages[photo];
   const add=()=>{addLine(cart,product,variant,qty);setAdded(true)};
   return <>

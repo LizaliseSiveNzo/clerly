@@ -1491,3 +1491,10 @@ footer .wordmark img {filter:brightness(0) invert(93%) sepia(10%) saturate(300%)
 .checkout-signin .button {font-size:11px;gap:20px;}
 .account-return-note {padding:18px 20px;background:#edf2e4;font-size:13px;}
 @media(max-width:700px){.purchase-added {padding:16px;}.purchase-added>div {gap:20px;}.sticky-purchase .button {font-size:10px;gap:12px;}.checkout-signin {padding:18px;}}
+/* Supplied serum duo and trio photography. */
+.bundle-feature-grid {grid-template-columns:repeat(3,minmax(0,1fr));}
+.bundle-art.has-bundle-photo {background:#b9ad9b;height:360px;}
+.bundle-art .bundle-photo {width:100%;height:100%;object-fit:contain;transform:none;mix-blend-mode:normal;}
+.bundle-card-copy h3 {font-size:29px;}
+@media(max-width:1000px) and (min-width:701px){.bundle-feature-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){.bundle-feature-grid {grid-template-columns:1fr;}.bundle-art.has-bundle-photo {height:390px;}}

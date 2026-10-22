@@ -48,7 +48,7 @@
           "price_cents": 34900,
           "stock": 0,
           "units": 2,
-          "bundleImage": ""
+          "bundleImage": "/serum/clerly-serum-duo.webp"
         },
         {
           "id": "bf000000-0000-4000-8000-000000000403",
@@ -58,7 +58,7 @@
           "price_cents": 49900,
           "stock": 0,
           "units": 3,
-          "bundleImage": ""
+          "bundleImage": "/serum/clerly-serum-trio.webp"
         }
       ]
     },
