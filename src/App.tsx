@@ -1,5 +1,6 @@
 import {
   useState,
+  useRef,
   useEffect,
   type FormEvent,
 } from "react";
@@ -16,6 +17,11 @@ import { api, auth } from "./lib/client";
 import { type Product, productSchema } from "./lib/models";
 import { CartProvider, useCart } from "./Cart";
 import { SalesCatalogProvider, SalesHome, SalesShop, SalesProduct, SalesCart, SalesCheckout, SalesFAQ } from "./PreorderStore";
+declare global {
+  interface Window {
+    fbq?: (command: string, event: string) => void;
+  }
+}
 export type Catalog = {
   products: Product[];
   checkoutEnabled: boolean;
@@ -302,6 +308,7 @@ const policyContent: Record<string, [string, string[]]> = {
     [
       "This policy is being prepared before launch.",
       "Customer identities use the same authentication service as our related store. This storefront restricts order access to the signed-in customer and this store.",
+      "We use the Meta Pixel to measure page visits and advertising performance. It sends page-view events and browser/device information to Meta and may use cookies to connect visits with advertising activity. We do not add customer names, email addresses, delivery details or payment information to these events.",
       "Before orders open, we will publish the business identity, privacy contact, retention periods, processors, customer rights and consent information.",
     ],
   ],
@@ -493,6 +500,13 @@ function Site({ initialCatalog }: { initialCatalog?: Catalog }) {
     ready: false,
   });
   const location = useLocation();
+  // The base snippet records the initial load; only track subsequent route changes.
+  const pixelPath = useRef(location.pathname);
+  useEffect(() => {
+    if (pixelPath.current === location.pathname) return;
+    pixelPath.current = location.pathname;
+    window.fbq?.("track", "PageView");
+  }, [location.pathname]);
   useEffect(() => {
     let alive = true;
     void api<Catalog>("catalog")
